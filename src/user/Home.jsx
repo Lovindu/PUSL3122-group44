@@ -47,7 +47,9 @@ function Home() {
         </div>
 
         <div className="saved-designs-section">
-          <h2 className="section-title">Saved Designs</h2>
+          <div className='saved-designs-title'>
+            <h2 className="section-title">Saved Designs</h2>
+          </div>
           
           <div className="controls-row">
             <div className="search-container">

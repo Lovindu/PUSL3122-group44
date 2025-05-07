@@ -6,6 +6,7 @@ function Setup() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     customerName: '',
+    designName: '',
     roomHeight: '',
     roomWidth: '',
     roomLength: '',
@@ -23,7 +24,7 @@ function Setup() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted with data:', formData);
-    navigate('/home');
+    navigate('/designEditor');
   };
 
   const handleCancel = () => {
@@ -47,6 +48,19 @@ function Setup() {
               className="form-input"
             />
           </div>
+
+          <div className="form-group">
+            <label htmlFor="customerName">Design Name</label>
+            <input
+              type="text"
+              id="designName"
+              name="designName"
+              value={formData.designName}
+              onChange={handleChange}
+              className="form-input"
+            />
+          </div>
+          
           
           <div className="form-group">
             <label htmlFor="roomHeight">Room Height</label>

@@ -1,21 +1,19 @@
 .home-container {
-    padding: 30px;
-    width: 100%;
+    padding: 20px;
     min-height: 100vh;
     margin: 0;
     font-family: system-ui, -apple-system, sans-serif;
-    background-color: #fafafa;
   }
   
   .home-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 10px 20px 10px 20px;
     margin-bottom: 30px;
     background-color: #f4f7f8;
     border-radius: 8px;
-    width: 100%;
+    border: 1px solid #E5E8EC;
   }
   
   .welcome-header {
@@ -53,18 +51,22 @@
     align-items: center;
     cursor: pointer;
     transition: background-color 0.2s;
+    background-image: url("../assets/card-background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
   
   .create-design-card:hover {
     background-color: #eaeaea;
   }
   
-  .icon-container {
+/*   .icon-container {
     background-color: #fff;
     padding: 15px;
     border-radius: 50%;
     margin-bottom: 10px;
-  }
+  } */
   
   .plus-icon {
     width: 24px;
@@ -80,12 +82,19 @@
     margin-top: 20px;
     width: 100%;
   }
+
+  .saved-designs-title {
+    background-color: #F5F7F9;
+    border: 1px solid #E5E8EC;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
   
   .section-title {
     font-size: 20px;
     margin-bottom: 15px;
-    padding-left: 10px;
-    border-left: 5px solid #23898b;
+    padding-left: 20px;
+    color: #23898b;
   }
   
   .controls-row {
@@ -104,8 +113,11 @@
   .search-input {
     width: 100%;
     padding: 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
+    border: none;
+    border-radius: 10px;
+    background-color: #F5F7F9;
+    border: 1px solid #E5E8EC;
+    color: #757575;
   }
   
   .search-btn {
@@ -120,10 +132,11 @@
   
   .filter-select {
     padding: 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background-color: #fff;
+    border-radius: 10px;
     cursor: pointer;
+    background-color: #F5F7F9;
+    border: 1px solid #E5E8EC;
+    color: #757575;
   }
   
   .designs-grid {
@@ -140,6 +153,7 @@
     transition: transform 0.2s;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    background-image: url("../assets/card-background.png");
   }
   
   .design-card:hover {
@@ -148,7 +162,6 @@
   
   .design-thumbnail {
     height: 150px;
-    background-color: #e0e0e0;
   }
   
   .design-title {

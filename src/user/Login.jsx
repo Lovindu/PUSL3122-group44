@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import furnitureLogo from '../assets/Logo.png';
+import LoginImage from '../assets/login-background.png';
 
 function Login() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function Login() {
     
     
     if (username && password) {
-      navigate('/home');
+      navigate('/');
     }
   };
 
