@@ -1,0 +1,126 @@
+@import './Users.css';
+
+.admin-main-header {
+    margin-bottom: 24px;
+}
+
+.admin-add-furniture-btn {
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.admin-add-furniture-btn:hover {
+    opacity: 0.9;
+}
+
+.admin-search-row {
+    margin-bottom: 32px;
+}
+
+.admin-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 320px;
+}
+
+.admin-search-input {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    border: 2px solid #222;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    background: #fff;
+}
+
+.admin-search-icon {
+    position: absolute;
+    right: 14px;
+    font-size: 1.2rem;
+    color: #222;
+}
+
+.furniture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 32px;
+    margin-top: 0;
+}
+
+.furniture-card {
+    background: #d9d9d9;
+    border-radius: 12px;
+    padding: 24px 18px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 260px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.furniture-card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.furniture-card-image {
+    width: 100px;
+    height: 100px;
+    background: #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.furniture-card-availability {
+    font-size: 1rem;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.furniture-card-actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+}
+
+.admin-edit-btn {
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.admin-delete-btn {
+    background: #ff6b6b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.admin-edit-btn:hover,
+.admin-delete-btn:hover {
+    opacity: 0.85;
+}

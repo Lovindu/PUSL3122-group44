@@ -1,0 +1,243 @@
+.admin-dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f8f9fa;
+    gap: 0;
+    padding: 0;
+    width: 100vw;
+}
+
+.admin-sidebar {
+    width: 320px;
+    background: #f5f6f7;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 0 24px 0;
+    min-height: 100vh;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.admin-sidebar-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 36px;
+    font-family: inherit;
+}
+
+.admin-nav {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+    margin-bottom: auto;
+}
+
+.admin-nav-link {
+    width: 80%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #222;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.admin-nav-link.active,
+.admin-nav-link:focus {
+    background: #bfcfcf;
+    color: #fff;
+}
+
+.admin-logout-btn {
+    margin-top: 40px;
+    width: 80%;
+    padding: 14px 0;
+    border: none;
+    border-radius: 8px;
+    background: #a93f3f;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.admin-logout-btn:hover {
+    opacity: 0.9;
+}
+
+.admin-main-content {
+    flex: 1;
+    background: #fff;
+    border-radius: 0;
+    padding: 32px 32px 24px 32px;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 100vh;
+}
+
+.admin-main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.admin-main-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.admin-add-user-btn {
+    background: #7ba7a8;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.admin-add-user-btn:hover {
+    opacity: 0.9;
+}
+
+.admin-search-row {
+    margin-bottom: 18px;
+}
+
+.admin-search-input {
+    width: 260px;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f5f6f7;
+}
+
+.admin-table-wrapper {
+    overflow-x: auto;
+}
+
+.admin-user-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    /* Add vertical spacing between rows */
+    font-size: 1rem;
+    background: none;
+}
+
+.admin-user-table th {
+    text-align: left;
+    font-weight: 700;
+    padding-bottom: 10px;
+    background: none;
+}
+
+.admin-user-table th:last-child,
+.admin-user-table td:last-child {
+    text-align: right;
+}
+
+.admin-user-table tr.user-row {
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 0;
+    display: table-row;
+    align-items: unset;
+}
+
+.admin-user-table td {
+    background: #f5f6f7;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    vertical-align: middle;
+    border: none;
+}
+
+.admin-user-table td:last-child {
+    padding-right: 32px;
+}
+
+.user-col-username {
+    flex: 2;
+    font-weight: 500;
+}
+
+.user-col-role {
+    flex: 1;
+}
+
+.user-col-status {
+    flex: 1;
+}
+
+.user-col-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.admin-edit-btn,
+.admin-delete-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.admin-edit-btn {
+    background: #222;
+    color: #fff;
+}
+
+.admin-delete-btn {
+    background: #a93f3f;
+    color: #fff;
+    margin-right: 0;
+}
+
+.admin-edit-btn:hover,
+.admin-delete-btn:hover {
+    opacity: 0.85;
+}
+
+@media (max-width: 900px) {
+    .admin-dashboard-container {
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
+    }
+
+    .admin-sidebar {
+        width: 100%;
+        min-height: unset;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 16px;
+        border-radius: 0;
+    }
+
+    .admin-main-content {
+        padding: 16px;
+        border-radius: 0;
+    }
+}
