@@ -1,0 +1,113 @@
+.room-specifications-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #fafafa;
+    padding: 30px;
+    width: 100%;
+  }
+  
+  .specifications-form-container {
+    width: 100%;
+    max-width: 600px; 
+    background-color: white;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    margin: 0 auto;
+  }
+  
+  .specifications-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #333;
+    text-align: center;
+  }
+  
+  .specifications-form {
+    display: flex;
+    flex-direction: column; 
+    gap: 20px; 
+    width: 100%;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-group label {
+    font-size: 16px;
+    color: #555;
+    font-weight: 500;
+  }
+  
+  .form-input {
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: #7ba7a8;
+    background-color: #fff;
+  }
+  
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+  }
+  
+  .cancel-button, .create-button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 48%;
+  }
+  
+  .cancel-button {
+    background-color: #a93f3f;
+    color: white;
+  }
+  
+  .create-button {
+    background-color: #1a1a1a;
+    color: white;
+  }
+  
+  .cancel-button:hover, .create-button:hover {
+    opacity: 0.9;
+  }
+  
+  @media (max-width: 768px) {
+    .specifications-form {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .specifications-form-container {
+      padding: 20px;
+    }
+    
+    .form-buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .cancel-button, .create-button {
+      width: 100%;
+    }
+  }
+  
