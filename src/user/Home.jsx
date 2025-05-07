@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
-import plusIcon from '../../assets/plus-icon.svg';
+import plusIcon from '../assets/plus-icon.svg';
 
 function Home() {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ function Home() {
   };
   
   const handleCreateNewDesign = () => {
-    navigate('/room-specifications');
+    navigate('/roomsetup');
   };
 
   return (

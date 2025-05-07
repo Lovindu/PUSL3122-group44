@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
-import furnitureLogo from '../../assets/furniture-bed-svgrepo-com.svg';
+import furnitureLogo from '../assets/Logo.png';
 
 function Login() {
   const navigate = useNavigate();
