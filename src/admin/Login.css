@@ -4,6 +4,8 @@
     width: 100vw;
     margin: 0;
     padding: 0;
+    flex-direction: row; /* Ensure standard left-to-right flow */
+    background-color: #f8f9fa; /* Light background color for the entire page */
 }
 
 .login-form-container {
@@ -16,6 +18,19 @@
     position: relative;
     height: 100vh;
     min-width: 350px;
+    order: 2; /* CHANGED: Move to right side */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.05); /* CHANGED: Shadow direction */
+}
+
+.login-image-container {
+    flex: 1;
+    background-color: #1b4d42; /* Dark green background color matching chair */
+    background-image: url('../assets/chairimage.png'); /* Add the chair image to your assets folder */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    order: 1; /* CHANGED: Move to left side */
+    display: block; /* Make it visible */
 }
 
 .logo-container {
@@ -122,22 +137,19 @@
     padding-bottom: 1.5rem;
 }
 
-.login-image-container {
-    flex: 1;
-    background-color: white;
-    background-image: url('../../assets/chair-image.jpg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center right;
-}
-
 @media (max-width: 900px) {
+    .login-container {
+        flex-direction: column-reverse; /* CHANGED: Show form at bottom on mobile */
+    }
+    
     .login-form-container {
         width: 100%;
         min-width: 0;
+        order: 2;
     }
-
+    
     .login-image-container {
-        display: none;
+        height: 40vh; /* Show some of the image on mobile */
+        order: 1;
     }
 }
