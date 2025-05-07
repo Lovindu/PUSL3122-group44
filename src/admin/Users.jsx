@@ -18,10 +18,10 @@ export default function UserManagement() {
         <h2 className="admin-sidebar-title">Dashboard</h2>
         <nav className="admin-nav">
           <button className="admin-nav-link active">User Management</button>
-          <button className="admin-nav-link" onClick={() => navigate('/admin/furniture')}>Furniture management</button>
-          <button className="admin-nav-link" onClick={() => navigate('/admin/designs')}>Design management</button>
+          <button className="admin-nav-link" onClick={() => navigate('/adminfurniture')}>Furniture management</button>
+          <button className="admin-nav-link" onClick={() => navigate('/admindesigns')}>Design management</button>
         </nav>
-        <button className="admin-logout-btn" onClick={() => navigate('/admin-login')}>Logout</button>
+        <button className="admin-logout-btn" onClick={() => navigate('/adminlogin')}>Logout</button>
       </aside>
       <main className="admin-main-content">
         <div className="admin-main-header">
@@ -55,7 +55,11 @@ export default function UserManagement() {
                 <tr key={i} className="user-row">
                   <td>{u.email}</td>
                   <td>{u.role}</td>
-                  <td>{u.status}</td>
+                  <td>
+                    <span className={`status-indicator status-${u.status.toLowerCase()}`}>
+                      {u.status}
+                    </span>
+                  </td>
                   <td>
                     <button className="admin-edit-btn">Edit</button>
                     <button className="admin-delete-btn">Delete</button>

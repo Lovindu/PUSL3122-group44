@@ -14,11 +14,11 @@ export default function FurnitureManagement() {
       <aside className="admin-sidebar">
         <h2 className="admin-sidebar-title">Admin dashboard</h2>
         <nav className="admin-nav">
-          <button className="admin-nav-link" onClick={() => navigate('/admin/users')}>User Management</button>
+          <button className="admin-nav-link" onClick={() => navigate('/adminusers')}>User Management</button>
           <button className="admin-nav-link active">Furniture management</button>
-          <button className="admin-nav-link" onClick={() => navigate('/admin/designs')}>Design management</button>
+          <button className="admin-nav-link" onClick={() => navigate('/admindesigns')}>Design management</button>
         </nav>
-        <button className="admin-logout-btn" onClick={() => navigate('/admin-login')}>Logout</button>
+        <button className="admin-logout-btn" onClick={() => navigate('/adminlogin')}>Logout</button>
       </aside>
       <main className="admin-main-content">
         <div className="admin-main-header">
