@@ -1,22 +1,31 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 import furnitureLogo from '../assets/Logo.png';
-import LoginImage from '../assets/login-background.png';
+import { useAuth } from '../context/AuthContext';
 
 function Login() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempt with:', { username, password, rememberMe });
+    setError('');
+    setLoading(true);
     
-    
-    if (username && password) {
+    try {
+      await login(email, password);
       navigate('/');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Failed to log in. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,14 +38,16 @@ function Login() {
 
         <div className="login-content">
           <h1 className="welcome-text">Welcome Back!</h1>
-          <p className="login-subtitle">Enter you credentials to login</p>
+          <p className="login-subtitle">Enter your credentials to login</p>
+
+          {error && <p className="error-message">{error}</p>}
 
           <form onSubmit={handleSubmit} className="login-form">
             <input
-              type="text"
-              placeholder="Enter username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="login-input"
               required
             />
@@ -62,11 +73,17 @@ function Login() {
               <a href="#" className="forgot-password">Forgot Password?</a>
             </div>
 
-            <button type="submit" className="login-button">Login</button>
+            <button type="submit" className="login-button" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login'}
+            </button>
+            
+            <p className="signup-link">
+              Don't have an account? <Link to="/signup">Sign up</Link>
+            </p>
           </form>
 
           <div className="footer-text">
-            <p>All right reserved for Furniture</p>
+            <p>All rights reserved for Furniture</p>
           </div>
         </div>
       </div>

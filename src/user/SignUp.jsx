@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import furnitureLogo from '../assets/Logo.png';
-import LoginImage from '../assets/login-background.png';
+import { auth, db } from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -10,14 +12,40 @@ function SignUp() {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempt with:', { username, password, rememberMe });
+    setError('');
+    setLoading(true);
     
-    
-    if (email && password && name) {
-      navigate('/');
+    try {
+      // Create the user with Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      
+      const user = userCredential.user;
+      
+      // Store additional user data in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        name: name,
+        email: email,
+        isAdmin: false,
+        createdAt: new Date(),
+      });
+      
+      console.log('User created successfully:', user.uid);
+      navigate('/'); // Navigate to home page after successful signup
+      
+    } catch (error) {
+      console.error('Error during signup:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,11 +58,13 @@ function SignUp() {
 
         <div className="login-content">
           <h1 className="welcome-text">Welcome!</h1>
-          <p className="login-subtitle">Enter you credentials to signup</p>
+          <p className="login-subtitle">Enter your credentials to signup</p>
+
+          {error && <p className="error-message">{error}</p>}
 
           <form onSubmit={handleSubmit} className="login-form">
             <input
-              type="text"
+              type="email"
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -68,14 +98,20 @@ function SignUp() {
                 />
                 <label htmlFor="remember">Remember me</label>
               </div>
-              <a href="#" className="forgot-password">Forgot Password?</a>
+              <a href="/login" className="forgot-password">Already have an account?</a>
             </div>
 
-            <button type="submit" className="login-button">Login</button>
+            <button 
+              type="submit" 
+              className="login-button" 
+              disabled={loading}
+            >
+              {loading ? 'Signing Up...' : 'Sign Up'}
+            </button>
           </form>
 
           <div className="footer-text">
-            <p>All right reserved for Furniture</p>
+            <p>All rights reserved for Furniture</p>
           </div>
         </div>
       </div>

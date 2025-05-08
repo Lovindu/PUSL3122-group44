@@ -1,8 +1,9 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import plusIcon from '../assets/plus-icon.svg';
 import { db } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 import { 
   collection, 
   addDoc, 
@@ -17,22 +18,38 @@ import {
 
 function Home() {
   const navigate = useNavigate();
+  const { currentUser, fetchUserData } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterValue, setFilterValue] = useState('latest');
   const [savedDesigns, setSavedDesigns] = useState([]);
-  const [userId, setUserId] = useState("uuids1234");
+  const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
   
-  // Mock data for designs
-  const designs = [
-    { id: 1, title: 'Design for john', date: '02/04/2025' },
-    { id: 2, title: 'Design for john', date: '02/04/2025' },
-    { id: 3, title: 'Design for john', date: '02/04/2025' },
-    { id: 4, title: 'Design for john', date: '02/04/2025' },
-    { id: 5, title: 'Design for john', date: '02/04/2025' },
-    { id: 6, title: 'Design for john', date: '02/04/2025' },
-    { id: 7, title: 'Design for john', date: '02/04/2025' },
-    { id: 8, title: 'Design for john', date: '02/04/2025' }
-  ];
+  // Load user data on component mount
+  useEffect(() => {
+    const getUserData = async () => {
+      if (currentUser) {
+        try {
+          const userData = await fetchUserData(currentUser);
+          if (userData) {
+            setUserName(userData.name || '');
+            setUserId(currentUser.uid);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+    
+    getUserData();
+  }, [currentUser, fetchUserData]);
+  
+  // Load user designs whenever userId changes
+  useEffect(() => {
+    if (userId) {
+      getUserDesigns(userId);
+    }
+  }, [userId]);
   
   const handleLogout = () => {
     navigate('/login');
@@ -49,30 +66,22 @@ function Home() {
         where('userId', '==', userId)
       );
       const querySnapshot = await getDocs(designsQuery);
-      setSavedDesigns(querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))); 
-      return querySnapshot.docs.map(doc => ({
+      const designs = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      setSavedDesigns(designs);
+      return designs;
     } catch (error) {
       console.error('Error getting user designs:', error);
       throw error;
     }
   };
 
-  console.log(savedDesigns);
-
-  useEffect(() => {
-    getUserDesigns("uuids1234"); 
-  }, [])
-
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1 className="welcome-header">Welcome, User!</h1>
+        <h1 className="welcome-header">Welcome, {userName || 'User'}!</h1>
         <button className="logout-btn" onClick={handleLogout}>Logout</button>
       </header>
 
@@ -123,7 +132,7 @@ function Home() {
               <div key={design.id} className="design-card">
                 <div className="design-thumbnail"></div>
                 <h3 className="design-title">{design.name}</h3>
-                <p className="design-date">{design.date}</p>
+                <p className="design-date">{design.createdAt?.toDate().toLocaleDateString() || 'No date'}</p>
               </div>
             ))}
           </div>
