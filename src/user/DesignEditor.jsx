@@ -1,12 +1,13 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import "./DesignEditor.css";
 import AddIconWhite from "../assets/Plus-white.png";
-import './DesignEditor.css';
-import { useState } from 'react';
 import Room2D from '../components/Room2D';
 import Room3D from '../components/Room3D';
 import { db } from "../firebase";
-import {  collection, 
+import {  
+  collection, 
   addDoc, 
   updateDoc, 
   doc, 
@@ -15,9 +16,9 @@ import {  collection,
   query,
   where,
   serverTimestamp,
-  setDoc } from 'firebase/firestore';
+  setDoc 
+} from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
-import { useLocation } from 'react-router-dom';
 
 const furnitureCatalog = [
   {
@@ -72,24 +73,20 @@ const furnitureCatalog = [
   },
 ];
 
-/* const furnitureData = [
-  { id: "furniture1", name: "Chair", type: "chair", image: "/images/chair.svg", modelPath: "/models/chair.glb" },
-  { id: "furniture2", name: "bunkbed", type: "bunkbed", image: "/images/bunkbed.svg", modelPath: "/models/bunk-bed.glb" },
-  { id: "furniture3", name: "Tv-stand", type: "tv-stand", image: "/images/Tv-stand.png", modelPath: "/models/Tv-stand.glb" },
-]; */
-
 const DesignEditor = () => {
   const location = useLocation();
-  const passedData = location.state || {};
+  const { state } = location;
   
   const { currentUser } = useAuth();
   const [is3DView, setIs3DView] = useState(false);
-  const [roomSize, setRoomSize] = useState(passedData.roomDetails || { width: 10, length: 10, height: 3 });
+  const [roomSize, setRoomSize] = useState(state?.roomDetails || { width: 10, length: 10, height: 3 });
   const [furniture, setFurniture] = useState([]);
   const [wallColor, setWallColor] = useState('#e0e0e0');
   const [floorColor, setFloorColor] = useState('#eaeaea');
   const [showDropdown, setShowDropdown] = useState(false);
-  const [designName, setDesignName] = useState(passedData.designName || '');
+  const [designName, setDesignName] = useState(state?.designName || '');
+  const [customerName, setCustomerName] = useState(state?.customerName || '');
+  const [userName, setUserName] = useState(state?.userName || '');
 
   const addFurnitureToRoom = (item) => {
     setFurniture([
@@ -119,6 +116,21 @@ const DesignEditor = () => {
     setFurniture(updatedArray);
   };
 
+  const capture2DPreview = () => {
+    return JSON.stringify({
+      width: roomSize.width,
+      length: roomSize.length,
+      furniture: furniture.map(item => ({
+        id: item.id,
+        type: item.type,
+        position: item.position,
+        dimensions: item.dimensions
+      })),
+      wallColor,
+      floorColor
+    });
+  };
+
   const saveDesign = async (designData) => {
     try {
       const designRef = await addDoc(collection(db, 'designs'), {
@@ -126,7 +138,6 @@ const DesignEditor = () => {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
-      alert("design saved" + designRef.id);
       return designRef.id;
     } catch (error) {
       console.error('Error saving design:', error);
@@ -140,11 +151,13 @@ const DesignEditor = () => {
       return;
     }
 
-    // Use the designName state that now comes from Setup.jsx
     const name = designName || "My Living Room Design";
+    const preview2D = capture2DPreview();
 
     const designData = {
-      name, // This will now be the name passed from Setup.jsx if available
+      name,
+      customerName,
+      userName,
       userId: currentUser.uid,
       room: {
         width: roomSize.width,
@@ -163,20 +176,21 @@ const DesignEditor = () => {
         view: is3DView ? "3D" : "2D",
         scale: 1,
         version: "1.0"
-      }
+      },
+      preview2D: preview2D
     };
     
     try {
-      // Save to main designs collection (your existing code)
       const designId = await saveDesign(designData);
       
-      // ALSO save reference to this design in the user's subcollection
       await setDoc(doc(db, 'users', currentUser.uid, 'userDesigns', designId), {
         designId,
         name,
+        customerName,
+        userName,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-        thumbnailUrl: "", // Could add thumbnail later
+        preview2D: preview2D
       });
       
       alert("Design saved successfully!");
@@ -185,8 +199,6 @@ const DesignEditor = () => {
       alert("Failed to save design. Please try again.");
     }
   };
-
-  console.log(roomSize);
 
   return (
     <div className='designEditor'>
@@ -207,7 +219,7 @@ const DesignEditor = () => {
         </div>
       </nav>
 
-      <section  className='desginEditor-section'>
+      <section className='desginEditor-section'>
         <div className='editor-section'>
           <div style={{ width: 600, height: "auto", margin: '0 auto', background: '#f5f5f5', border: 'none', position: 'relative', padding: "10px", borderRadius: '10px' }}>
             {is3DView ? (
@@ -244,35 +256,40 @@ const DesignEditor = () => {
 
           <div className='designEditor-roomprop'>
             <h3>Room Properties</h3>
-            <div className="form-group">
-              <p>Design Name</p>
-              <input 
-                type="text" 
-                name='designName' 
-                value={designName} 
-                onChange={(e) => setDesignName(e.target.value)}
-                placeholder="Enter design name"
-              />
-            </div>
+            
             <div className='roomprop-firstrow'>
               <div>
                 <p>Height</p>
-                <input type="number" name='height' value={roomSize.height} onChange={(e) => {setRoomSize({...roomSize, height: e.target.value})}}/>
+                <input 
+                  type="number" 
+                  name='height' 
+                  value={roomSize.height} 
+                  onChange={(e) => {setRoomSize({...roomSize, height: Number(e.target.value)})}}
+                />
               </div>
 
               <div>
                 <p>Width</p>
-                <input type="number" name='width' value={roomSize.width} onChange={(e) => {setRoomSize({...roomSize, width: e.target.value})}}/>
+                <input 
+                  type="number" 
+                  name='width' 
+                  value={roomSize.width} 
+                  onChange={(e) => {setRoomSize({...roomSize, width: Number(e.target.value)})}}
+                />
               </div>
             </div>
 
             <div>
               <p>Length</p>
-              <input type="number" name='length' value={roomSize.length} onChange={(e) => {setRoomSize({...roomSize, length: e.target.value})}}/>
+              <input 
+                type="number" 
+                name='length' 
+                value={roomSize.length} 
+                onChange={(e) => {setRoomSize({...roomSize, length: Number(e.target.value)})}}
+              />
             </div>
             <button>Delete design</button>
           </div>
-
         </div>
       </section>
     </div>

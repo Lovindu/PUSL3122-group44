@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Setup.css';
 
 function Setup() {
   const navigate = useNavigate();
+  const { currentUser, fetchUserData } = useAuth();
+  const [userName, setUserName] = useState('');
   const [formData, setFormData] = useState({
     customerName: '',
     designName: '',
@@ -11,6 +14,23 @@ function Setup() {
     roomWidth: '',
     roomLength: '',
   });
+
+  // Fetch the current user's name when component mounts
+  useEffect(() => {
+    const getUserName = async () => {
+      if (currentUser) {
+        try {
+          const userData = await fetchUserData(currentUser);
+          if (userData && userData.name) {
+            setUserName(userData.name);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+    getUserName();
+  }, [currentUser, fetchUserData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,10 +44,12 @@ function Setup() {
     e.preventDefault();
     console.log('Form submitted with data:', formData);
     
-    // Navigate to DesignEditor with state containing room details
+    // Navigate to DesignEditor with state containing room details and userName
     navigate('/designEditor', { 
       state: { 
         designName: formData.designName,
+        customerName: formData.customerName,
+        userName: userName, // Pass the user's name
         roomDetails: {
           width: parseFloat(formData.roomWidth) || 10,
           length: parseFloat(formData.roomLength) || 10,
