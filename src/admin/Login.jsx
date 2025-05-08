@@ -8,7 +8,7 @@ import { db } from '../firebase';
 
 function AdminLogin() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, logout } = useAuth(); // Added logout from useAuth
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -26,12 +26,14 @@ function AdminLogin() {
       
       // Check if user is admin
       const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-      if (userDoc.exists() && userDoc.data().isAdmin) {
+      
+      if (userDoc.exists() && userDoc.data().isAdmin === true) {
+        // User is admin, proceed to admin dashboard
         navigate('/adminusers');
       } else {
-        // If not admin, sign them out and show error
+        // User is not admin, log them out and show error
         await logout();
-        setError('Access denied. You need admin privileges to access this page.');
+        setError('Invalid credentials. Admin access required.');
       }
     } catch (error) {
       console.error('Admin login error:', error);
