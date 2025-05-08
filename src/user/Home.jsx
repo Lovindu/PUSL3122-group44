@@ -61,19 +61,28 @@ function Home() {
 
   const getUserDesigns = async (userId) => {
     try {
-      const designsQuery = query(
-        collection(db, 'designs'),
-        where('userId', '==', userId)
-      );
-      const querySnapshot = await getDocs(designsQuery);
-      const designs = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      // Fetch designs from the userDesigns subcollection under the user document
+      const userDesignsRef = collection(db, 'users', userId, 'userDesigns');
+      const querySnapshot = await getDocs(userDesignsRef);
+      
+      console.log(`Found ${querySnapshot.docs.length} designs for user ${userId}`);
+      
+      const designs = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Ensure timestamps are properly handled
+          createdAt: data.createdAt || new Date(),
+          updatedAt: data.updatedAt || new Date()
+        };
+      });
+      
       setSavedDesigns(designs);
       return designs;
     } catch (error) {
-      console.error('Error getting user designs:', error);
+      console.error('Error getting user designs from subcollection:', error);
+      setSavedDesigns([]);
       throw error;
     }
   };
