@@ -1,0 +1,88 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Login.css';
+import furnitureLogo from '../assets/Logo.png';
+import LoginImage from '../assets/login-background.png';
+
+function SignUp() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Login attempt with:', { username, password, rememberMe });
+    
+    
+    if (email && password && name) {
+      navigate('/');
+    }
+  };
+
+  return (
+    <div className="login-container-user">
+      <div className="login-form-container">
+        <div className="logo-container">
+          <img src={furnitureLogo} alt="Furniture Logo" className="furniture-logo" />
+        </div>
+
+        <div className="login-content">
+          <h1 className="welcome-text">Welcome!</h1>
+          <p className="login-subtitle">Enter you credentials to signup</p>
+
+          <form onSubmit={handleSubmit} className="login-form">
+            <input
+              type="text"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="login-input"
+              required
+            />
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="login-input"
+              required
+            />
+            <input
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="login-input"
+              required
+            />
+
+            <div className="form-options">
+              <div className="remember-me">
+                <input
+                  type="checkbox"
+                  id="remember"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <label htmlFor="remember">Remember me</label>
+              </div>
+              <a href="#" className="forgot-password">Forgot Password?</a>
+            </div>
+
+            <button type="submit" className="login-button">Login</button>
+          </form>
+
+          <div className="footer-text">
+            <p>All right reserved for Furniture</p>
+          </div>
+        </div>
+      </div>
+      <div className="login-image-container-user">
+      </div>
+    </div>
+  );
+}
+
+export default SignUp;

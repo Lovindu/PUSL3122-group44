@@ -1,0 +1,291 @@
+
+.designEditor-nav {
+    display: flex;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #F5F7F9;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.designEditor-nav-right {
+    display: flex;
+    gap: 3rem;
+}
+
+.designEditor-add-furniture {
+    display: flex;
+    align-items: center;
+    color: white;
+    border: none;
+    background-color: #84A7A9;
+    font-weight: 600;
+    border-radius: 10px;
+    gap: 0.75rem;
+    padding: 10px 15px;
+}
+
+.designEditor-add-furniture > img {
+    height: 22px;
+}
+
+.designEditor-button {
+    font-weight: 600;
+    background-color: white;
+    border: 1px solid #e5e8ec;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+.designEditor-button-save {
+    background-color: black;
+    border: none;
+    padding: 10px 15px;
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+.desginEditor-section {
+    display: flex;
+    align-items: start;
+    width: 100%;
+}
+
+.editor-section {
+    width: 60%;
+}
+
+.designEditor-roomprop {
+    border-radius: 10px;
+    border: 1px solid #E5E8EC;
+    padding: 20px;
+    width: 330px;
+    color: #757575;
+}
+
+.designEditor-roomprop h3 {
+    color: black;
+}
+
+.roomprop-firstrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.designEditor-roomprop input {
+    border: 1px solid #E5E8EC;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.designEditor-roomprop button {
+    margin-top: 20px;
+    color: white;
+    border: none;
+    background-color: #8B2727;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+
+/* imported */
+
+/* Main layout */
+.app-root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: #f7f7f7;
+    font-family: 'Inter', Arial, sans-serif;
+  }
+  
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    z-index: 10;
+  }
+  
+  .top-bar .spacer {
+    flex: 1;
+  }
+  
+  .top-bar button, .top-bar .btn {
+    background: #e6ecea;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .top-bar button.save {
+    background: #222;
+    color: #fff;
+  }
+  .top-bar button:hover {
+    background: #d1dad7;
+  }
+  
+  .main-content {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+  
+  .left-sidebar {
+    width: 320px;
+    background: #f9f9f9;
+    border-right: 1px solid #e0e0e0;
+    padding: 1.5rem 1rem 1.5rem 2rem;
+    overflow-y: auto;
+  }
+  
+  .furniture-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .furniture-card img {
+    width: 100%;
+    max-width: 180px;
+    border-radius: 8px;
+  }
+  .furniture-card .name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0.5rem 0 0.2rem 0;
+  }
+  .furniture-card .add-btn {
+    background: #222;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.4rem 1.2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+  .furniture-card .add-btn:hover {
+    background: #444;
+  }
+  
+  .viewport {
+    flex: 1;
+    background: #eaeaea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+  
+  .right-sidebar {
+    width: 340px;
+    background: #fff;
+    border-left: 1px solid #e0e0e0;
+    padding: 1.5rem 2rem 1.5rem 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .furniture-details img {
+    width: 100%;
+    max-width: 180px;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  .furniture-details .name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .furniture-details .colors {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .furniture-details .color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .furniture-details .color-swatch.selected {
+    border: 2px solid #222;
+  }
+  .furniture-details .remove-btn {
+    background: #a33;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.4rem 1.2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+  .furniture-details .remove-btn:hover {
+    background: #c44;
+  }
+  
+  .room-properties {
+    margin-top: 1rem;
+  }
+  .room-properties label {
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    display: block;
+  }
+  .room-properties input {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+  }
+  .room-properties .wall-colors {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .room-properties .wall-colors input {
+    width: 100%;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  .delete-design-btn {
+    background: #a33;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 1.5rem;
+  }
+  .delete-design-btn:hover {
+    background: #c44;
+  } 

@@ -8,6 +8,7 @@ import AdminLogin from "./admin/Login";
 import AdminUsers from './admin/Users';
 import AdminFurniture from './admin/Furniture';
 import AdminDesigns from './admin/Designs';
+import SignUp from './user/SignUp';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path='/login' element={<Login/>}/>
           <Route path='/roomsetup' element={<Setup/>}/>
           <Route path='/designeditor' element={<DesignEditor/>}/>
+          <Route path='/signup' element={<SignUp/>}/>
 
           {/* Admin Routes */}
           <Route path='/adminlogin' element={<AdminLogin/>}/>
