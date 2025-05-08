@@ -23,7 +23,18 @@ function Setup() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted with data:', formData);
-    navigate('/designEditor');
+    
+    // Navigate to DesignEditor with state containing room details
+    navigate('/designEditor', { 
+      state: { 
+        designName: formData.designName,
+        roomDetails: {
+          width: parseFloat(formData.roomWidth) || 10,
+          length: parseFloat(formData.roomLength) || 10,
+          height: parseFloat(formData.roomHeight) || 3
+        }
+      } 
+    });
   };
 
   const handleCancel = () => {

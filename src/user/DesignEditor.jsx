@@ -14,7 +14,10 @@ import {  collection,
   getDocs,
   query,
   where,
-  serverTimestamp } from 'firebase/firestore';
+  serverTimestamp,
+  setDoc } from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext';
+import { useLocation } from 'react-router-dom';
 
 const furnitureCatalog = [
   {
@@ -76,13 +79,17 @@ const furnitureCatalog = [
 ]; */
 
 const DesignEditor = () => {
+  const location = useLocation();
+  const passedData = location.state || {};
+  
+  const { currentUser } = useAuth();
   const [is3DView, setIs3DView] = useState(false);
-  const [roomSize, setRoomSize] = useState({ width: 10, length: 10, height: 3 });
+  const [roomSize, setRoomSize] = useState(passedData.roomDetails || { width: 10, length: 10, height: 3 });
   const [furniture, setFurniture] = useState([]);
   const [wallColor, setWallColor] = useState('#e0e0e0');
   const [floorColor, setFloorColor] = useState('#eaeaea');
   const [showDropdown, setShowDropdown] = useState(false);
-  const [designName, setDesignName] = useState('');
+  const [designName, setDesignName] = useState(passedData.designName || '');
 
   const addFurnitureToRoom = (item) => {
     setFurniture([
@@ -128,9 +135,17 @@ const DesignEditor = () => {
   }
 
   const handleSaveDesign = async () => {
+    if (!currentUser) {
+      alert("Please log in to save your design");
+      return;
+    }
+
+    // Use the designName state that now comes from Setup.jsx
+    const name = designName || "My Living Room Design";
+
     const designData = {
-      name: "My Living Room Design",
-      userId: "uuids1234",
+      name, // This will now be the name passed from Setup.jsx if available
+      userId: currentUser.uid,
       room: {
         width: roomSize.width,
         length: roomSize.length,
@@ -145,15 +160,31 @@ const DesignEditor = () => {
         image: item.image
       })),
       metadata: {
-        view: "2D",
+        view: is3DView ? "3D" : "2D",
         scale: 1,
         version: "1.0"
       }
     };
     
-    await saveDesign(designData);
-
-  }
+    try {
+      // Save to main designs collection (your existing code)
+      const designId = await saveDesign(designData);
+      
+      // ALSO save reference to this design in the user's subcollection
+      await setDoc(doc(db, 'users', currentUser.uid, 'userDesigns', designId), {
+        designId,
+        name,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        thumbnailUrl: "", // Could add thumbnail later
+      });
+      
+      alert("Design saved successfully!");
+    } catch (error) {
+      console.error("Error saving design:", error);
+      alert("Failed to save design. Please try again.");
+    }
+  };
 
   console.log(roomSize);
 
@@ -213,6 +244,16 @@ const DesignEditor = () => {
 
           <div className='designEditor-roomprop'>
             <h3>Room Properties</h3>
+            <div className="form-group">
+              <p>Design Name</p>
+              <input 
+                type="text" 
+                name='designName' 
+                value={designName} 
+                onChange={(e) => setDesignName(e.target.value)}
+                placeholder="Enter design name"
+              />
+            </div>
             <div className='roomprop-firstrow'>
               <div>
                 <p>Height</p>

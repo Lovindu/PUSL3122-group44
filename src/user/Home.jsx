@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react'; // Add useMemo import
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import plusIcon from '../assets/plus-icon.svg';
@@ -78,6 +78,28 @@ function Home() {
     }
   };
 
+  // Filter and sort designs based on search query and filter value
+  const filteredAndSortedDesigns = useMemo(() => {
+    // First, filter designs based on search query
+    let filtered = savedDesigns.filter(design => 
+      design.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    
+    // Then, sort based on filter value
+    return filtered.sort((a, b) => {
+      // Convert Firestore timestamps to JS Date objects for comparison
+      const dateA = a.createdAt?.toDate?.() || new Date(0);
+      const dateB = b.createdAt?.toDate?.() || new Date(0);
+      
+      // Sort based on the selected filter
+      if (filterValue === 'latest') {
+        return dateB - dateA; // Most recent first
+      } else {
+        return dateA - dateB; // Oldest first
+      }
+    });
+  }, [savedDesigns, searchQuery, filterValue]);
+
   return (
     <div className="home-container">
       <header className="home-header">
@@ -128,11 +150,11 @@ function Home() {
           </div>
 
           <div className="designs-grid">
-            {savedDesigns.map(design => (
+            {filteredAndSortedDesigns.map(design => (
               <div key={design.id} className="design-card">
                 <div className="design-thumbnail"></div>
                 <h3 className="design-title">{design.name}</h3>
-                <p className="design-date">{design.createdAt?.toDate().toLocaleDateString() || 'No date'}</p>
+                <p className="design-date">{design.createdAt?.toDate?.().toLocaleDateString() || 'No date'}</p>
               </div>
             ))}
           </div>
