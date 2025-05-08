@@ -10,7 +10,6 @@ function Setup() {
     roomHeight: '',
     roomWidth: '',
     roomLength: '',
-    wallColor: ''
   });
 
   const handleChange = (e) => {
@@ -30,6 +29,10 @@ function Setup() {
   const handleCancel = () => {
     navigate('/home');
   };
+
+  const goToDesigner = () => {
+    
+  }
 
   return (
     <div className="room-specifications-container">
@@ -98,18 +101,6 @@ function Setup() {
             />
           </div>
           
-          <div className="form-group">
-            <label htmlFor="wallColor">Color of the walls</label>
-            <input
-              type="text"
-              id="wallColor"
-              name="wallColor"
-              value={formData.wallColor}
-              onChange={handleChange}
-              className="form-input"
-            />
-          </div>
-          
           <div className="form-buttons">
             <button 
               type="button" 
@@ -118,7 +109,7 @@ function Setup() {
             >
               Cancel
             </button>
-            <button type="submit" className="create-button">Create</button>
+            <button type="submit" className="create-button" onClick={goToDesigner}>Create</button>
           </div>
         </form>
       </div>

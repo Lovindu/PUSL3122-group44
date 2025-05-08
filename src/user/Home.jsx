@@ -1,12 +1,26 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import plusIcon from '../assets/plus-icon.svg';
+import { db } from '../firebase';
+import { 
+  collection, 
+  addDoc, 
+  updateDoc, 
+  doc, 
+  getDoc, 
+  getDocs,
+  query,
+  where,
+  serverTimestamp 
+} from 'firebase/firestore';
 
 function Home() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterValue, setFilterValue] = useState('latest');
+  const [savedDesigns, setSavedDesigns] = useState([]);
+  const [userId, setUserId] = useState("uuids1234");
   
   // Mock data for designs
   const designs = [
@@ -27,6 +41,33 @@ function Home() {
   const handleCreateNewDesign = () => {
     navigate('/roomsetup');
   };
+
+  const getUserDesigns = async (userId) => {
+    try {
+      const designsQuery = query(
+        collection(db, 'designs'),
+        where('userId', '==', userId)
+      );
+      const querySnapshot = await getDocs(designsQuery);
+      setSavedDesigns(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))); 
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error getting user designs:', error);
+      throw error;
+    }
+  };
+
+  console.log(savedDesigns);
+
+  useEffect(() => {
+    getUserDesigns("uuids1234"); 
+  }, [])
 
   return (
     <div className="home-container">
@@ -78,10 +119,10 @@ function Home() {
           </div>
 
           <div className="designs-grid">
-            {designs.map(design => (
+            {savedDesigns.map(design => (
               <div key={design.id} className="design-card">
                 <div className="design-thumbnail"></div>
-                <h3 className="design-title">{design.title}</h3>
+                <h3 className="design-title">{design.name}</h3>
                 <p className="design-date">{design.date}</p>
               </div>
             ))}

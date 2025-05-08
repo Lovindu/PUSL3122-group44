@@ -5,6 +5,16 @@ import './DesignEditor.css';
 import { useState } from 'react';
 import Room2D from '../components/Room2D';
 import Room3D from '../components/Room3D';
+import { db } from "../firebase";
+import {  collection, 
+  addDoc, 
+  updateDoc, 
+  doc, 
+  getDoc, 
+  getDocs,
+  query,
+  where,
+  serverTimestamp } from 'firebase/firestore';
 
 const furnitureCatalog = [
   {
@@ -67,11 +77,12 @@ const furnitureCatalog = [
 
 const DesignEditor = () => {
   const [is3DView, setIs3DView] = useState(false);
-  const [roomSize] = useState({ width: 10, length: 10, height: 3 });
+  const [roomSize, setRoomSize] = useState({ width: 10, length: 10, height: 3 });
   const [furniture, setFurniture] = useState([]);
   const [wallColor, setWallColor] = useState('#e0e0e0');
   const [floorColor, setFloorColor] = useState('#eaeaea');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [designName, setDesignName] = useState('');
 
   const addFurnitureToRoom = (item) => {
     setFurniture([
@@ -101,6 +112,51 @@ const DesignEditor = () => {
     setFurniture(updatedArray);
   };
 
+  const saveDesign = async (designData) => {
+    try {
+      const designRef = await addDoc(collection(db, 'designs'), {
+        ...designData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      alert("design saved" + designRef.id);
+      return designRef.id;
+    } catch (error) {
+      console.error('Error saving design:', error);
+      throw error;
+    }
+  }
+
+  const handleSaveDesign = async () => {
+    const designData = {
+      name: "My Living Room Design",
+      userId: "uuids1234",
+      room: {
+        width: roomSize.width,
+        length: roomSize.length,
+        height: roomSize.height
+      },
+      furniture: furniture.map(item => ({
+        id: item.id,
+        type: item.type,
+        name: item.name,
+        position: item.position,
+        dimensions: item.dimensions,
+        image: item.image
+      })),
+      metadata: {
+        view: "2D",
+        scale: 1,
+        version: "1.0"
+      }
+    };
+    
+    await saveDesign(designData);
+
+  }
+
+  console.log(roomSize);
+
   return (
     <div className='designEditor'>
       <nav className='designEditor-nav'>
@@ -116,7 +172,7 @@ const DesignEditor = () => {
             <input type="color" value={floorColor} onChange={e => setFloorColor(e.target.value)} style={{ width: 32, height: 32, border: 'none', background: 'none' }} />
           </label>
           <button className='designEditor-button' onClick={() => setIs3DView((v) => !v)}>Switch to {is3DView ? '2D' : '3D'} View</button>
-          <button className='designEditor-button-save'>Save</button>
+          <button className='designEditor-button-save' onClick={handleSaveDesign}>Save</button>
         </div>
       </nav>
 
@@ -160,18 +216,18 @@ const DesignEditor = () => {
             <div className='roomprop-firstrow'>
               <div>
                 <p>Height</p>
-                <input type="number" name='height' value={roomSize.height}/>
+                <input type="number" name='height' value={roomSize.height} onChange={(e) => {setRoomSize({...roomSize, height: e.target.value})}}/>
               </div>
 
               <div>
                 <p>Width</p>
-                <input type="number" name='width' value={roomSize.width}/>
+                <input type="number" name='width' value={roomSize.width} onChange={(e) => {setRoomSize({...roomSize, width: e.target.value})}}/>
               </div>
             </div>
 
             <div>
               <p>Length</p>
-              <input type="number" name='length' value={roomSize.length}/>
+              <input type="number" name='length' value={roomSize.length} onChange={(e) => {setRoomSize({...roomSize, length: e.target.value})}}/>
             </div>
             <button>Delete design</button>
           </div>
