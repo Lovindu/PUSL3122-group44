@@ -95,7 +95,7 @@ function Setup() {
   };
 
   const handleCancel = () => {
-    navigate('/home');
+    navigate('/');
   };
 
   const goToDesigner = () => {
