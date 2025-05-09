@@ -124,3 +124,9 @@
 .admin-delete-btn:hover {
     opacity: 0.85;
 }
+
+.stockCount {
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}

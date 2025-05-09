@@ -260,6 +260,7 @@ export default function FurnitureManagement() {
                 <input
                   type="number"
                   name="stockCount"
+                  className='stockCount'
                   value={furnitureForm.stockCount}
                   onChange={handleInputChange}
                   min="0"
@@ -271,6 +272,7 @@ export default function FurnitureManagement() {
                 <input
                   type="number"
                   name="price"
+                  className='stockCount'
                   value={furnitureForm.price}
                   onChange={handleInputChange}
                   min="0"
@@ -338,6 +340,7 @@ export default function FurnitureManagement() {
                 <input
                   type="number"
                   name="stockCount"
+                  className='stockCount'
                   value={furnitureForm.stockCount}
                   onChange={handleInputChange}
                   min="0"
@@ -349,6 +352,7 @@ export default function FurnitureManagement() {
                 <input
                   type="number"
                   name="price"
+                  className='stockCount'
                   value={furnitureForm.price}
                   onChange={handleInputChange}
                   min="0"
