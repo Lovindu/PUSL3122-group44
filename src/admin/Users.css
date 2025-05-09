@@ -91,7 +91,11 @@ html, body {
     flex-direction: column;
     margin-left: 320px;
     height: 100vh;
-    overflow-y: hidden;
+    overflow-y: scroll;
+}
+
+.admin-main-content::-webkit-scrollbar {
+    display: none;
 }
 
 .admin-main-header {

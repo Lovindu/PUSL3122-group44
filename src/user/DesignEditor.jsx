@@ -16,7 +16,8 @@ import {
   query,
   where,
   serverTimestamp,
-  setDoc 
+  setDoc,
+  deleteDoc 
 } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 
@@ -91,6 +92,7 @@ const DesignEditor = () => {
   const [isEditing, setIsEditing] = useState(state?.isEditing || false);
   const [designId, setDesignId] = useState(state?.designId || null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDesignSaved, setIsDesignSaved] = useState(false);
 
   useEffect(() => {
     const initializeDesign = async () => {
@@ -108,6 +110,7 @@ const DesignEditor = () => {
             setCustomerName(designData.customerName || '');
             setUserName(designData.userName || '');
             setIs3DView(designData.metadata?.view === "3D" || false);
+            setIsDesignSaved(true);
           }
         }
       } catch (error) {
@@ -242,11 +245,34 @@ const DesignEditor = () => {
         });
       }
       
+      setIsDesignSaved(true);
       alert("Design saved successfully!");
-      navigate('/'); // Navigate back to home after successful save
+      navigate('/');
     } catch (error) {
       console.error("Error saving design:", error);
       alert(`Failed to save design: ${error.message}`);
+    }
+  };
+
+  const handleDeleteDesign = async () => {
+    if (!currentUser || !designId) return;
+
+    if (!confirm('Are you sure you want to delete this design? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      // Delete from main designs collection
+      await deleteDoc(doc(db, 'designs', designId));
+      
+      // Delete from user's designs subcollection
+      await deleteDoc(doc(db, 'users', currentUser.uid, 'userDesigns', designId));
+      
+      alert('Design deleted successfully');
+      navigate('/');
+    } catch (error) {
+      console.error('Error deleting design:', error);
+      alert('Failed to delete design. Please try again.');
     }
   };
 
@@ -360,7 +386,23 @@ const DesignEditor = () => {
               </div>
             </div>
 
-            <button>Delete design</button>
+            {isDesignSaved && (
+              <button 
+                className="delete-design-btn"
+                onClick={handleDeleteDesign}
+                style={{
+                  backgroundColor: '#ff4444',
+                  color: 'white',
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  marginTop: '16px'
+                }}
+              >
+                Delete design
+              </button>
+            )}
           </div>
         </div>
       </section>
