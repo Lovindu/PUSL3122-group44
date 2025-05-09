@@ -12,3 +12,6 @@ Admin:
 User:
     email - lovi@gmail.com
     password - lovi@123
+
+use 'npm install' command after cloning to install packages.
+use 'npm run dev' run the application.
