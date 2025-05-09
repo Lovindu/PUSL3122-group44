@@ -2,92 +2,106 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #fafafa;
-    width: 100%;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
   }
   
   .specifications-form-container {
-    width: 100%;
-    max-width: 500px; 
     background-color: white;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
   }
   
   .specifications-title {
-    font-size: 28px;
-    margin-bottom: 30px;
-    margin-top: 0px;
-    color: #333;
     text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+    font-size: 1.5rem;
   }
   
   .specifications-form {
     display: flex;
-    flex-direction: column; 
-    gap: 15px; 
-    width: 100%;
+    flex-direction: column;
+    gap: 1.5rem;
   }
   
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.5rem;
   }
   
   .form-group label {
-    font-size: 16px;
-    color: #555;
     font-weight: 500;
+    color: #333;
   }
   
   .form-input {
-    padding: 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    font-size: 12px;
-    background-color: #f9f9f9;
-    transition: border-color 0.3s;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
   }
   
   .form-input:focus {
     outline: none;
-    border-color: #7ba7a8;
-    background-color: #fff;
+    border-color: #4a90e2;
+  }
+  
+  .form-input.error {
+    border-color: #dc3545;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
   }
   
   .form-buttons {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    gap: 1rem;
+    margin-top: 1rem;
   }
   
-  .cancel-button, .create-button {
-    padding: 12px 30px;
+  .cancel-button,
+  .create-button {
+    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: 600;
+    border-radius: 4px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: opacity 0.2s;
-    width: 48%;
+    transition: background-color 0.2s;
+    flex: 1;
   }
   
   .cancel-button {
-    background-color: #a93f3f;
+    background-color: #dc3545;
     color: white;
+    font-weight: bold;
+  }
+  
+  .cancel-button:hover {
+    background-color: #e9ecef;
   }
   
   .create-button {
-    background-color: #1a1a1a;
+    background-color: black;
     color: white;
   }
   
-  .cancel-button:hover, .create-button:hover {
-    opacity: 0.9;
+  .create-button:hover {
+    background-color: #357abd;
+  }
+  
+  .create-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
   }
   
   @media (max-width: 768px) {

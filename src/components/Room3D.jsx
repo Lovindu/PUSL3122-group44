@@ -40,15 +40,25 @@ function Furniture({ type, position, dimensions, modelPath }) {
     return null;
   }
 
-  const { scene } = useGLTF(modelPathToUse);
-
-  return (
-    <primitive
-      object={scene}
-      position={[position.x, (furnitureType?.height || 0.5) / 2, position.y]}
-      scale={furnitureType?.scale || 1}
-    />
-  );
+  try {
+    const { scene } = useGLTF(modelPathToUse);
+    
+    // Clone the scene to avoid issues with multiple instances
+    const clonedScene = scene.clone();
+    
+    return (
+      <primitive
+        object={clonedScene}
+        position={[position.x, (furnitureType?.height || 0.5) / 2, position.y]}
+        scale={furnitureType?.scale || 1}
+        castShadow
+        receiveShadow
+      />
+    );
+  } catch (error) {
+    console.error(`Error loading model for ${type}:`, error);
+    return null;
+  }
 }
 
 const Room3D = ({ roomSize, furniture, wallColor, floorColor }) => {

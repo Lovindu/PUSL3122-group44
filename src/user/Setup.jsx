@@ -14,6 +14,10 @@ function Setup() {
     roomWidth: '',
     roomLength: '',
   });
+  const [errors, setErrors] = useState({
+    customerName: '',
+    designName: ''
+  });
 
   // Fetch the current user's name when component mounts
   useEffect(() => {
@@ -32,24 +36,55 @@ function Setup() {
     getUserName();
   }, [currentUser, fetchUserData]);
 
+  const validateForm = () => {
+    const newErrors = {
+      customerName: '',
+      designName: ''
+    };
+    let isValid = true;
+
+    if (!formData.customerName.trim()) {
+      newErrors.customerName = 'Customer name is required';
+      isValid = false;
+    }
+
+    if (!formData.designName.trim()) {
+      newErrors.designName = 'Design name is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value
     });
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted with data:', formData);
+    
+    if (!validateForm()) {
+      return;
+    }
     
     // Navigate to DesignEditor with state containing room details and userName
     navigate('/designEditor', { 
       state: { 
-        designName: formData.designName,
-        customerName: formData.customerName,
-        userName: userName, // Pass the user's name
+        designName: formData.designName.trim(),
+        customerName: formData.customerName.trim(),
+        userName: userName,
         roomDetails: {
           width: parseFloat(formData.roomWidth) || 10,
           length: parseFloat(formData.roomLength) || 10,
@@ -81,24 +116,27 @@ function Setup() {
               name="customerName"
               value={formData.customerName}
               onChange={handleChange}
-              className="form-input"
+              className={`form-input ${errors.customerName ? 'error' : ''}`}
+              placeholder="Enter customer name"
             />
+            {errors.customerName && <span className="error-message">{errors.customerName}</span>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="customerName">Design Name</label>
+            <label htmlFor="designName">Design Name</label>
             <input
               type="text"
               id="designName"
               name="designName"
               value={formData.designName}
               onChange={handleChange}
-              className="form-input"
+              className={`form-input ${errors.designName ? 'error' : ''}`}
+              placeholder="Enter design name"
             />
+            {errors.designName && <span className="error-message">{errors.designName}</span>}
           </div>
           
-          
-          <div className="form-group">
+          {/* <div className="form-group">
             <label htmlFor="roomHeight">Room Height</label>
             <input
               type="text"
@@ -132,7 +170,7 @@ function Setup() {
               onChange={handleChange}
               className="form-input"
             />
-          </div>
+          </div> */}
           
           <div className="form-buttons">
             <button 
@@ -142,7 +180,13 @@ function Setup() {
             >
               Cancel
             </button>
-            <button type="submit" className="create-button" onClick={goToDesigner}>Create</button>
+            <button 
+              type="submit" 
+              className="create-button"
+              disabled={!formData.customerName.trim() || !formData.designName.trim()}
+            >
+              Create
+            </button>
           </div>
         </form>
       </div>

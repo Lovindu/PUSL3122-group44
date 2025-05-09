@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "./DesignEditor.css";
 import AddIconWhite from "../assets/Plus-white.png";
 import Room2D from '../components/Room2D';
@@ -76,26 +76,60 @@ const furnitureCatalog = [
 const DesignEditor = () => {
   const location = useLocation();
   const { state } = location;
+  const navigate = useNavigate();
   
   const { currentUser } = useAuth();
-  const [is3DView, setIs3DView] = useState(false);
+  const [is3DView, setIs3DView] = useState(state?.metadata?.view === "3D" || false);
   const [roomSize, setRoomSize] = useState(state?.roomDetails || { width: 10, length: 10, height: 3 });
-  const [furniture, setFurniture] = useState([]);
-  const [wallColor, setWallColor] = useState('#e0e0e0');
-  const [floorColor, setFloorColor] = useState('#eaeaea');
+  const [furniture, setFurniture] = useState(state?.existingFurniture || []);
+  const [wallColor, setWallColor] = useState(state?.wallColor || '#e0e0e0');
+  const [floorColor, setFloorColor] = useState(state?.floorColor || '#eaeaea');
   const [showDropdown, setShowDropdown] = useState(false);
   const [designName, setDesignName] = useState(state?.designName || '');
   const [customerName, setCustomerName] = useState(state?.customerName || '');
   const [userName, setUserName] = useState(state?.userName || '');
+  const [isEditing, setIsEditing] = useState(state?.isEditing || false);
+  const [designId, setDesignId] = useState(state?.designId || null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const initializeDesign = async () => {
+      try {
+        if (state?.designId) {
+          const designDoc = await getDoc(doc(db, 'designs', state.designId));
+          if (designDoc.exists()) {
+            const designData = designDoc.data();
+            
+            setRoomSize(designData.room || state.roomDetails);
+            setFurniture(designData.furniture || []);
+            setWallColor(designData.wallColor || '#e0e0e0');
+            setFloorColor(designData.floorColor || '#eaeaea');
+            setDesignName(designData.name || '');
+            setCustomerName(designData.customerName || '');
+            setUserName(designData.userName || '');
+            setIs3DView(designData.metadata?.view === "3D" || false);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading design data:', error);
+        alert('Error loading design data. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeDesign();
+  }, [state]);
 
   const addFurnitureToRoom = (item) => {
+    const catalogItem = furnitureCatalog.find(f => f.id === item.id);
     setFurniture([
       ...furniture,
       {
         ...item,
         type: item.id,
         image: item.image,
-        modelPath: item.modelPath,
+        modelPath: catalogItem?.modelPath,
         color: item.colors ? item.colors[0] : '#888',
         id: Date.now(),
         position: { x: roomSize.width / 2, y: roomSize.length / 2 },
@@ -104,7 +138,7 @@ const DesignEditor = () => {
           length: item.length || 1,
         }
       },
-    ])
+    ]);
     setShowDropdown(false);
   };
 
@@ -131,79 +165,104 @@ const DesignEditor = () => {
     });
   };
 
-  const saveDesign = async (designData) => {
-    try {
-      const designRef = await addDoc(collection(db, 'designs'), {
-        ...designData,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      });
-      return designRef.id;
-    } catch (error) {
-      console.error('Error saving design:', error);
-      throw error;
-    }
-  }
-
   const handleSaveDesign = async () => {
     if (!currentUser) {
       alert("Please log in to save your design");
       return;
     }
 
-    const name = designName || "My Living Room Design";
-    const preview2D = capture2DPreview();
-
-    const designData = {
-      name,
-      customerName,
-      userName,
-      userId: currentUser.uid,
-      room: {
-        width: roomSize.width,
-        length: roomSize.length,
-        height: roomSize.height
-      },
-      furniture: furniture.map(item => ({
-        id: item.id,
-        type: item.type,
-        name: item.name,
-        position: item.position,
-        dimensions: item.dimensions,
-        image: item.image
-      })),
-      metadata: {
-        view: is3DView ? "3D" : "2D",
-        scale: 1,
-        version: "1.0"
-      },
-      preview2D: preview2D
-    };
-    
     try {
-      const designId = await saveDesign(designData);
-      
-      await setDoc(doc(db, 'users', currentUser.uid, 'userDesigns', designId), {
-        designId,
+      const name = designName || "My Living Room Design";
+      const preview2D = capture2DPreview();
+
+      // Prepare the design data
+      const designData = {
         name,
-        customerName,
-        userName,
+        customerName: customerName || '',
+        userName: userName || '',
+        userId: currentUser.uid,
+        room: {
+          width: Number(roomSize.width),
+          length: Number(roomSize.length),
+          height: Number(roomSize.height)
+        },
+        furniture: furniture.map(item => {
+          const catalogItem = furnitureCatalog.find(f => f.id === item.type);
+          return {
+            id: item.id,
+            type: item.type,
+            name: item.name || catalogItem?.name,
+            position: {
+              x: Number(item.position.x),
+              y: Number(item.position.y)
+            },
+            dimensions: {
+              width: Number(item.dimensions.width),
+              length: Number(item.dimensions.length)
+            },
+            image: item.image,
+            modelPath: catalogItem?.modelPath
+          };
+        }),
+        metadata: {
+          view: is3DView ? "3D" : "2D",
+          scale: 1,
+          version: "1.0"
+        },
+        preview2D,
+        wallColor,
+        floorColor,
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        preview2D: preview2D
-      });
+        updatedAt: serverTimestamp()
+      };
+
+      let designRef;
+      
+      if (isEditing && designId) {
+        // Update existing design
+        designRef = doc(db, 'designs', designId);
+        await updateDoc(designRef, {
+          ...designData,
+          updatedAt: serverTimestamp()
+        });
+        
+        // Update in user's designs subcollection
+        await updateDoc(doc(db, 'users', currentUser.uid, 'userDesigns', designId), {
+          ...designData,
+          updatedAt: serverTimestamp()
+        });
+      } else {
+        // Create new design
+        designRef = await addDoc(collection(db, 'designs'), designData);
+        
+        // Add to user's designs subcollection
+        await setDoc(doc(db, 'users', currentUser.uid, 'userDesigns', designRef.id), {
+          designId: designRef.id,
+          ...designData
+        });
+      }
       
       alert("Design saved successfully!");
+      navigate('/'); // Navigate back to home after successful save
     } catch (error) {
       console.error("Error saving design:", error);
-      alert("Failed to save design. Please try again.");
+      alert(`Failed to save design: ${error.message}`);
     }
   };
+
+  if (isLoading) {
+    return <div className="loading">Loading design...</div>;
+  }
 
   return (
     <div className='designEditor'>
       <nav className='designEditor-nav'>
-        <button onClick={() => setShowDropdown((v) => !v)} className='designEditor-add-furniture'>Add Furniture <img src={AddIconWhite} alt="" /></button>
+        <div className="designEditor-nav-left">
+          <button onClick={() => navigate('/')} className='designEditor-back-btn'>
+            ← Back to Home
+          </button>
+          <button onClick={() => setShowDropdown((v) => !v)} className='designEditor-add-furniture'>Add Furniture <img src={AddIconWhite} alt="" /></button>
+        </div>
 
         <div className='designEditor-nav-right'>
           <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -288,6 +347,19 @@ const DesignEditor = () => {
                 onChange={(e) => {setRoomSize({...roomSize, length: Number(e.target.value)})}}
               />
             </div>
+
+            <div className='design-info-section'>
+              <h4>Design Information</h4>
+              <div className='design-info-item'>
+                <p>Customer Name:</p>
+                <span>{customerName || 'Not specified'}</span>
+              </div>
+              <div className='design-info-item'>
+                <p>Design Name:</p>
+                <span>{designName || 'Not specified'}</span>
+              </div>
+            </div>
+
             <button>Delete design</button>
           </div>
         </div>

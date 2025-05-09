@@ -18,12 +18,19 @@ import {
 
 function Home() {
   const navigate = useNavigate();
-  const { currentUser, fetchUserData } = useAuth();
+  const { currentUser, fetchUserData, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterValue, setFilterValue] = useState('latest');
   const [savedDesigns, setSavedDesigns] = useState([]);
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
+  
+  // Check authentication on component mount
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/login');
+    }
+  }, [currentUser, navigate]);
   
   // Load user data on component mount
   useEffect(() => {
@@ -51,12 +58,74 @@ function Home() {
     }
   }, [userId]);
   
-  const handleLogout = () => {
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
   
   const handleCreateNewDesign = () => {
     navigate('/roomsetup');
+  };
+
+  const handleDesignClick = async (design) => {
+    try {
+      // First, get the complete design data from the designs collection
+      const designDoc = await getDoc(doc(db, 'designs', design.id));
+      
+      if (!designDoc.exists()) {
+        console.error('Design not found in main collection');
+        return;
+      }
+
+      const designData = designDoc.data();
+      
+      // Parse the preview2D data if it exists
+      let roomDetails = {
+        width: 10,
+        length: 10,
+        height: 3
+      };
+      
+      try {
+        if (designData.preview2D) {
+          const previewData = JSON.parse(designData.preview2D);
+          roomDetails = {
+            width: previewData.width || 10,
+            length: previewData.length || 10,
+            height: 3
+          };
+        }
+      } catch (error) {
+        console.error('Error parsing preview data:', error);
+      }
+
+      // Navigate to DesignEditor with the complete design details
+      navigate('/designEditor', {
+        state: {
+          designId: design.id,
+          designName: designData.name,
+          customerName: designData.customerName,
+          userName: designData.userName,
+          roomDetails: roomDetails,
+          isEditing: true,
+          existingFurniture: designData.furniture || [],
+          wallColor: designData.wallColor || '#e0e0e0',
+          floorColor: designData.floorColor || '#eaeaea',
+          metadata: designData.metadata || {
+            view: "2D",
+            scale: 1,
+            version: "1.0"
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error loading design:', error);
+      alert('Error loading design. Please try again.');
+    }
   };
 
   const getUserDesigns = async (userId) => {
@@ -160,7 +229,11 @@ function Home() {
 
           <div className="designs-grid">
             {filteredAndSortedDesigns.map(design => (
-              <div key={design.id} className="design-card">
+              <div 
+                key={design.id} 
+                className="design-card"
+                onClick={() => handleDesignClick(design)}
+              >
                 <div className="design-thumbnail"></div>
                 <h3 className="design-title">{design.name}</h3>
                 <p className="design-date">{design.createdAt?.toDate?.().toLocaleDateString() || 'No date'}</p>
